@@ -17,6 +17,7 @@ fun FlyScreenContent(
     ScreenContent{
         PeopleUserInput(
             titleSuffix = ", Economy",
+            viewModel = viewModel
         )
         Spacer(modifier = Modifier.height(8.dp))
         UserInput(
