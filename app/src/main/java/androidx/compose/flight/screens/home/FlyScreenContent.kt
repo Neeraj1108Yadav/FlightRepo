@@ -25,6 +25,18 @@ fun FlyScreenContent(
             vectorImageId = R.drawable.ic_location,
             onClick = {}
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        UserInput(
+            text = "Destination Input",
+            vectorImageId = R.drawable.ic_location,
+            onClick = {}
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        UserInput(
+            text = "Travel Dates",
+            vectorImageId = R.drawable.ic_location,
+            onClick = {}
+        )
     }
 }
 
