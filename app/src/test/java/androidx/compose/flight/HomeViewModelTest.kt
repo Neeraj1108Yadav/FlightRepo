@@ -21,18 +21,16 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `update count should change to 3`(){
+    fun `update count upto 5 success`(){
+        viewModel.addPeople()
+        assertEquals(2,viewModel.people)
+
         viewModel.addPeople()
         assertEquals(3,viewModel.people)
-    }
 
-    @Test
-    fun `update count should change to 4`(){
         viewModel.addPeople()
         assertEquals(4,viewModel.people)
-    }
-    @Test
-    fun `update count should change to 5`(){
+
         viewModel.addPeople()
         assertEquals(5,viewModel.people)
     }
