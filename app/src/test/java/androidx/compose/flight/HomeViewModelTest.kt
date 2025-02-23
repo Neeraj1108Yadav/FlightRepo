@@ -19,4 +19,22 @@ class HomeViewModelTest {
         viewModel.addPeople()
         assertEquals(2,viewModel.people)
     }
+
+    @Test
+    fun `update count should change to 3`(){
+        viewModel.addPeople()
+        assertEquals(3,viewModel.people)
+    }
+
+    @Test
+    fun `update count should change to 4`(){
+        viewModel.addPeople()
+        assertEquals(4,viewModel.people)
+    }
+    @Test
+    fun `update count should change to 5`(){
+        viewModel.addPeople()
+        assertEquals(5,viewModel.people)
+    }
+
 }
