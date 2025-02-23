@@ -1,0 +1,26 @@
+name: Android Unit Testing
+on:
+  push:
+    branches: ["unit"]
+jobs:
+  test:
+    name: Run Unit Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@4.4.0
+        with:
+          distribution: "oracle"
+          java-version: "17"
+
+      - name: Setup Gradle Cache
+        uses: gradle/gradle-build-action@v3.5.0
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
+
+
