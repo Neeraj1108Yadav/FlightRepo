@@ -20,10 +20,8 @@ fun FlyScreenContent(
             viewModel = viewModel
         )
         Spacer(modifier = Modifier.height(8.dp))
-        UserInput(
-            text = "Current Location Input",
-            vectorImageId = R.drawable.ic_location,
-            onClick = {}
+        CurrentLocationInput(
+            viewModel = viewModel
         )
         Spacer(modifier = Modifier.height(8.dp))
         UserInput(
