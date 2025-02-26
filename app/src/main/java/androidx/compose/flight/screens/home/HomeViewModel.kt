@@ -1,5 +1,6 @@
 package androidx.compose.flight.screens.home
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
@@ -20,7 +21,7 @@ class HomeViewModel : ViewModel() {
     var isValidPeopleCount by mutableStateOf(false)
         private set
 
-    private val _isGpsEnabled = MutableSharedFlow<Boolean>()
+    private val _isGpsEnabled = MutableSharedFlow<Boolean>(replay = 1)
     val isGpsEnabled: SharedFlow<Boolean> = _isGpsEnabled.asSharedFlow()
 
 
@@ -35,6 +36,7 @@ class HomeViewModel : ViewModel() {
 
     fun updateGpsStatus(isEnabled:Boolean){
         viewModelScope.launch{
+            Log.d("GPS","Is GPS Enabled : $isEnabled")
             _isGpsEnabled.emit(isEnabled)
         }
     }
