@@ -4,8 +4,11 @@ import androidx.compose.flight.R
 import androidx.compose.flight.components.UserInput
 import androidx.compose.flight.permission.CheckAndPromptGps
 import androidx.compose.flight.permission.LocationPermissionRequester
+import androidx.compose.flight.permission.LocationRequest
 import androidx.compose.flight.permission.PermissionHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
@@ -18,10 +21,19 @@ fun CurrentLocationInput(
     viewModel: HomeViewModel
 ){
     val context = LocalContext.current
-    var currentLocation = rememberSaveable { mutableStateOf("Current Location Input") }
+    val locationRequest = remember { LocationRequest(context) }
     var isPermissionChecked by rememberSaveable { mutableStateOf(false) }
     var isGpsChecked by rememberSaveable { mutableStateOf(false) }
     val permissionHandler = remember { PermissionHandler(context) }
+    var currentLocation = rememberSaveable{ mutableStateOf("Your Current Location") }
+
+    LaunchedEffect(Unit) {
+        locationRequest.currentLocation.collect{location ->
+            location?.let {
+                currentLocation.value = it
+            }
+        }
+    }
 
     UserInput(
         text = currentLocation.value,
@@ -45,7 +57,7 @@ fun CurrentLocationInput(
 
     if(isGpsChecked){
         CheckAndPromptGps(viewModel,permissionHandler) {
-
+            locationRequest.requestLocation()
         }
     }
 }
