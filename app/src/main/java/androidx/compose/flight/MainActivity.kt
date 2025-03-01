@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.flight.screens.HomeScreen
+import androidx.compose.flight.screens.home.HomeScreen
 import androidx.compose.flight.screens.LandingScreen
 import androidx.compose.flight.ui.theme.FlightScheduleTheme
 import androidx.compose.runtime.Composable

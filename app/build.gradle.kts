@@ -81,6 +81,11 @@ dependencies {
     implementation(libs.com.gson)
     implementation(libs.squareup.okhttp)
     implementation(libs.squareup.okhttp.logging.interceptor)
+
+    //google play services
+    implementation(libs.com.google.android.gms.location)
+
+    //permission
 }
 
 // Allow references to generated code

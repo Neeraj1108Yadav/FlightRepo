@@ -1,7 +1,9 @@
 package androidx.compose.flight.ui.theme
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
+import android.view.Window
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -9,7 +11,11 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = primaryDark,
@@ -68,19 +74,49 @@ fun FlightScheduleTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    var isLightStatusBarIcon = false
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) {
+                isLightStatusBarIcon = true
+                dynamicDarkColorScheme(context)
+            }else {
+                isLightStatusBarIcon  = false
+                dynamicLightColorScheme(context)
+            }
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> {
+            isLightStatusBarIcon = true
+            DarkColorScheme
+        }
+        else -> {
+            isLightStatusBarIcon = false
+            LightColorScheme
+        }
     }
+
+    SetStatusBarColor(
+        color = colorScheme.primary.toArgb(),
+        darkIcons = isLightStatusBarIcon
+    )
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
+}
+
+@Composable
+private fun SetStatusBarColor(color:Int,darkIcons: Boolean = false){
+    val activity  = LocalContext.current as Activity
+    val window: Window = activity.window
+    val view = LocalView.current
+
+    SideEffect {
+        window.statusBarColor = color
+        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkIcons
+    }
 }

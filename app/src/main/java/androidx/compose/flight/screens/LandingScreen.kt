@@ -28,12 +28,13 @@ fun LandingScreen(onTimeOut:()->Unit,modifier: Modifier = Modifier){
 
         LaunchedEffect(Unit) {
             delay(SplashWaitTime)
-            onCurrentTimeout()
+            onCurrentTimeout.invoke()
         }
 
         Text(
             text = "Flight\nSchedule",
             style = MaterialTheme.typography.displayMedium,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.W600
         )
     }

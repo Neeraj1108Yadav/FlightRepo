@@ -16,7 +16,8 @@ coil_version = "3.0.4"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 kapt = "2.1.0"
-
+play_service_version = "21.3.0"
+accompanist_permissions_version = "21.3.0"
 
 
 [libraries]
@@ -58,6 +59,12 @@ com-square = {group = "com.squareup.retrofit2", name = "retrofit", version.ref =
 com-gson = {group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit"}
 squareup-okhttp = {group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp"}
 squareup-okhttp-logging-interceptor = {group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp"}
+
+#Location
+com-google-android-gms-location = {group = "com.google.android.gms", name = "play-services-location", version.ref = "play_service_version"}
+
+#permission
+com-google-accompanist = {group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist_permissions_version"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
