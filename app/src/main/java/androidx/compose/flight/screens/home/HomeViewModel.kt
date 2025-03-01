@@ -1,18 +1,13 @@
 package androidx.compose.flight.screens.home
 
-import android.util.Log
 import androidx.compose.flight.permission.LocationRequest
 import androidx.compose.flight.permission.PermissionHandler
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 val MAX_PEOPLE = 4
