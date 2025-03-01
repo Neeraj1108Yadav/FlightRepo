@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.flight.R
 import androidx.compose.flight.components.UserInput
+import androidx.compose.flight.permission.LocationRequest
+import androidx.compose.flight.permission.PermissionHandler
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,7 +14,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun FlyScreenContent(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    permissionHandler: PermissionHandler,
+    requestLocation: LocationRequest
 ){
     ScreenContent{
         PeopleUserInput(
@@ -21,7 +25,8 @@ fun FlyScreenContent(
         )
         Spacer(modifier = Modifier.height(8.dp))
         CurrentLocationInput(
-            viewModel = viewModel
+            viewModel = viewModel,
+            permissionHandler
         )
         Spacer(modifier = Modifier.height(8.dp))
         UserInput(

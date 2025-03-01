@@ -1,7 +1,6 @@
 package androidx.compose.flight.permission
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -14,8 +13,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
-
-const val REQUEST_GPS_ENABLE = 1001
 
 class PermissionHandler(private val context: Context){
 

@@ -5,9 +5,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import kotlinx.coroutines.delay
 
 @Composable
 fun LocationPermissionRequester(
@@ -15,7 +15,7 @@ fun LocationPermissionRequester(
     onPermissionGranted : () -> Unit,
     onPermissionDenied : () -> Unit
 ){
-    var shouldRequestLocationPermission = rememberSaveable { mutableStateOf(false) }
+    val isLocationPermissionAllowed by remember{ mutableStateOf(permissionHandler.isLocationPermissionGiven()) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -31,20 +31,15 @@ fun LocationPermissionRequester(
     }
 
     LaunchedEffect(Unit) {
-        if(!permissionHandler.isLocationPermissionGiven()){
-            shouldRequestLocationPermission.value = true
-        }
-    }
-
-    LaunchedEffect(shouldRequestLocationPermission.value) {
-        delay(1000)
-        if(shouldRequestLocationPermission.value){
+        if(!isLocationPermissionAllowed){
             permissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
+        }else{
+            onPermissionGranted()
         }
     }
 }

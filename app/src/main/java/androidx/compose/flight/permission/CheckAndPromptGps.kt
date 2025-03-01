@@ -12,33 +12,22 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CheckAndPromptGps(
-    viewModel: HomeViewModel,
     permissionHandler: PermissionHandler,
-    onGpsEnabled : () -> Unit
+    onGpsEnabled : () -> Unit,
+    onGpsEnableDenied : () -> Unit
 ){
 
     val gpsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {result ->
         if(result.resultCode == Activity.RESULT_OK){
             onGpsEnabled()
         }else{
-            viewModel.updateGpsStatus(false)
+           onGpsEnableDenied()
         }
     }
 
     LaunchedEffect(Unit) {
-        launch{
-            viewModel.isGpsEnabled.collect{enabled ->
-                Log.d("GPS","Is GPS Enabled$$ : $enabled")
-                if(enabled){
-                    onGpsEnabled()
-                }else{
-                    permissionHandler.requestEnableGps(gpsLauncher) {
-                        onGpsEnabled()
-                    }
-                }
-            }
+        permissionHandler.requestEnableGps(gpsLauncher) {
+            onGpsEnabled()
         }
-        viewModel.updateGpsStatus(permissionHandler.isGpsEnabled())
-
     }
 }

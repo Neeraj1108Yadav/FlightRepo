@@ -54,7 +54,7 @@ fun UserInput(
 fun BaseUserInput(
     modifier: Modifier = Modifier,
     @DrawableRes vectorImageId:Int? = null,
-    onClick : () -> Unit = {},
+    onClick :  () -> Unit = {},
     tint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     content: @Composable () -> Unit
 ){

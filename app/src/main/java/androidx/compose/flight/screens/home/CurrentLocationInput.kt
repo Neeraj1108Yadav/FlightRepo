@@ -1,5 +1,6 @@
 package androidx.compose.flight.screens.home
 
+import android.util.Log
 import androidx.compose.flight.R
 import androidx.compose.flight.components.UserInput
 import androidx.compose.flight.permission.CheckAndPromptGps
@@ -15,39 +16,50 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun CurrentLocationInput(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    permissionHandler: PermissionHandler
 ){
-    val context = LocalContext.current
-    val locationRequest = remember { LocationRequest(context) }
-    var isPermissionChecked by rememberSaveable { mutableStateOf(false) }
-    var isGpsChecked by rememberSaveable { mutableStateOf(false) }
-    val permissionHandler = remember { PermissionHandler(context) }
-    var currentLocation = rememberSaveable{ mutableStateOf("Your Current Location") }
+    var showPermissionDialog by remember {mutableStateOf(false)}
+    var showGpsDialog by remember {mutableStateOf(false)}
+    val isPermissionGranted by viewModel.isLocationPermissionAllowed.collectAsState()
+    val isGpsEnabled by viewModel.isGpsAllowed.collectAsState()
+    val currentLocation by viewModel.currentLocation.collectAsState()
 
     LaunchedEffect(Unit) {
-        locationRequest.currentLocation.collect{location ->
-            location?.let {
-                currentLocation.value = it
-            }
+        launch{
+            viewModel.checkGpsStatus()
         }
+        viewModel.checkLocationPermissionStatus()
     }
 
+
     UserInput(
-        text = currentLocation.value,
+        text = currentLocation ?: "Your Current Location",
         vectorImageId = R.drawable.ic_location,
         onClick = {
-            isPermissionChecked = true
+            when{
+                !isPermissionGranted -> showPermissionDialog = true
+                !isGpsEnabled -> showGpsDialog = true
+                else ->  viewModel.requestLocation()
+            }
         }
     )
 
-    if(isPermissionChecked){
+    if(showPermissionDialog){
         LocationPermissionRequester(
             permissionHandler,
             onPermissionGranted = {
-                isGpsChecked = true
+                showPermissionDialog = false
+               if(!isGpsEnabled){
+                   showGpsDialog = true
+               }else{
+                   viewModel.requestLocation()
+               }
             },
             onPermissionDenied = {
 
@@ -55,9 +67,15 @@ fun CurrentLocationInput(
         )
     }
 
-    if(isGpsChecked){
-        CheckAndPromptGps(viewModel,permissionHandler) {
-            locationRequest.requestLocation()
-        }
+    if(showGpsDialog){
+        CheckAndPromptGps(permissionHandler,
+            onGpsEnabled = {
+                showGpsDialog = false
+                viewModel.requestLocation()
+            },
+            onGpsEnableDenied = {
+
+            }
+        )
     }
 }

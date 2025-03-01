@@ -1,19 +1,26 @@
 package androidx.compose.flight.screens.home
 
 import android.util.Log
+import androidx.compose.flight.permission.LocationRequest
+import androidx.compose.flight.permission.PermissionHandler
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
 
 val MAX_PEOPLE = 4
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+   private val permissionHandler: PermissionHandler,
+   private val locationRequest: LocationRequest
+) : ViewModel() {
 
     var people by mutableStateOf(1)
         private set
@@ -21,9 +28,13 @@ class HomeViewModel : ViewModel() {
     var isValidPeopleCount by mutableStateOf(false)
         private set
 
-    private val _isGpsEnabled = MutableSharedFlow<Boolean>(replay = 1)
-    val isGpsEnabled: SharedFlow<Boolean> = _isGpsEnabled.asSharedFlow()
+    private val _isLocationPermissionAllowed = MutableStateFlow(false)
+    val isLocationPermissionAllowed: StateFlow<Boolean> = _isLocationPermissionAllowed.asStateFlow()
 
+    private val _isGpsAllowed = MutableStateFlow(false)
+    val isGpsAllowed: StateFlow<Boolean> = _isGpsAllowed.asStateFlow()
+
+    val currentLocation: StateFlow<String?> = locationRequest.currentLocation
 
     fun addPeople(){
         people = (people % (MAX_PEOPLE + 1)) + 1
@@ -34,11 +45,17 @@ class HomeViewModel : ViewModel() {
         isValidPeopleCount = people > MAX_PEOPLE
     }
 
-    fun updateGpsStatus(isEnabled:Boolean){
-        viewModelScope.launch{
-            Log.d("GPS","Is GPS Enabled : $isEnabled")
-            _isGpsEnabled.emit(isEnabled)
-        }
+    fun checkLocationPermissionStatus(){
+        //Log.d("Location","Permission Granted = ${permissionHandler.isLocationPermissionGiven()}")
+        _isLocationPermissionAllowed.value = permissionHandler.isLocationPermissionGiven()
     }
 
+    fun checkGpsStatus(){
+        //Log.d("Location","GPS Enabled = ${permissionHandler.isGpsEnabled()}")
+        _isGpsAllowed.value = permissionHandler.isGpsEnabled()
+    }
+
+    fun requestLocation(){
+        locationRequest.requestLocation()
+    }
 }

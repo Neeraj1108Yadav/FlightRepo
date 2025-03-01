@@ -1,6 +1,9 @@
 package androidx.compose.flight.screens.home
 
+import androidx.compose.flight.HomeViewModelFactory
 import androidx.compose.flight.components.TabBar
+import androidx.compose.flight.permission.LocationRequest
+import androidx.compose.flight.permission.PermissionHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,10 +40,13 @@ enum class HomeScreenTabs{
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel()
 ){
-
+    val context = LocalContext.current
     var tabSelected by remember { mutableStateOf(HomeScreenTabs.Fly) }
+    val locationRequest = remember { LocationRequest(context) }
+    val permissionHandler = remember { PermissionHandler(context) }
+    val homeViewModelFactory = remember { HomeViewModelFactory(permissionHandler,locationRequest) }
+    val viewModel: HomeViewModel = viewModel(factory = homeViewModelFactory)
 
     val configuration = LocalConfiguration.current
     val sheetState = rememberBottomSheetScaffoldState(
@@ -82,7 +89,9 @@ fun HomeScreen(
        ){
            SearchContent(
                selectedTabs = tabSelected,
-               viewModel = viewModel
+               viewModel = viewModel,
+               permissionHandler = permissionHandler,
+               locationRequest = locationRequest
            )
        }
    }
@@ -91,11 +100,13 @@ fun HomeScreen(
 @Composable
 private fun SearchContent(
     selectedTabs: HomeScreenTabs,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    permissionHandler: PermissionHandler,
+    locationRequest: LocationRequest
 ){
     when(selectedTabs){
         HomeScreenTabs.Fly -> {
-            FlyScreenContent(viewModel)
+            FlyScreenContent(viewModel,permissionHandler,locationRequest)
         }
         HomeScreenTabs.Sleep -> {
 
